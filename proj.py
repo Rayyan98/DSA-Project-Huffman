@@ -1,3 +1,4 @@
+# Making Frequenc Dictionary From String
 def make_frequency_dict(rawstr):
     frequency = {}
     for character in rawstr:
@@ -7,18 +8,22 @@ def make_frequency_dict(rawstr):
             frequency[character] += 1
     return frequency
 
+# Making String From File
 def stringgen(file):
     string=''
     for character in file:
+        # Adding chr(10) which is new line
         string=string+character+chr(10)
     return string[:-1]
-    
+
+# It is very obvious
 def GetNodes(G):
     Nodes=[]
     for i in G.keys():
         Nodes.append(i)
     return Nodes
 
+# Getting All the Nodes that have no parents
 def heapTops(G):
     Nodes=GetNodes(G)
     tops=[]
@@ -31,13 +36,15 @@ def heapTops(G):
         if not check:
             tops.append(i)
     return tops
-    
+
+
 def Truecount(sub,G):
     if sub in G:
         return G[sub]
     else:
         return sub
 
+# Selection Sort to select Two minimum Elements
 def min2(lis,G):
     for i in range(min(2,len(lis))):
         mini=i
@@ -111,10 +118,10 @@ def replacer(fil,codes):
 
 def completer(string):
     leng=len(string)
-    rem=leng%8
+    rem=leng%7
     if rem==0:
         return string,0
-    left=8-rem
+    left=7-rem
     string="0"*left+string
     return string,left
 
@@ -123,7 +130,7 @@ def encoder(string):
     tempstr=''
     for i in string:
         tempstr=tempstr+i
-        if len(tempstr)==8:
+        if len(tempstr)==7:
             charcode=int(tempstr,2)
             char=chr(charcode)
             s = s+char
@@ -133,17 +140,41 @@ def encoder(string):
 def masterencoder(filename):
     rawstr=stringgen(filename)
     charfreq=make_frequency_dict(rawstr)
-    print("char frequencies",charfreq)
+    #print("char frequencies",charfreq)
     graph=Grapher(charfreq)
-    print("complete graph",graph)
+    #print("complete graph",graph)
     codes=assigncodes(graph)
-    maxleveler(codes)
-    print("assigned codes",codes,"\n")
+    depth = maxleveler(codes)
+    while depth%7 != 0:
+        depth += 1
+    protocol = ""
+    for i in codes:
+        j = codes[i]
+        length = str(len(j))
+        if len(length)==1:
+            length  = "0" + length
+        while len(j) != depth:
+            j = "0"+j
+        j = encoder(j)
+        protocol += (i+j+length)
+    #print(protocol)
+    protocol += "}"
+    protocol += "}"
+    protocol += "}"
+    # print("assigned codes",codes,"\n")
     encoded=replacer(rawstr,codes)
     encoded,left=completer(encoded)
     finalcode=encoder(encoded)
+    write_file('compressed.txt',finalcode,protocol)
     return finalcode,left
 
+def write_file(name,text,protocol):
+    file1 = open(name,"w+")
+    for i in protocol:
+        file1.write(i)
+    for i in text:
+        file1.write(i)
+    file1.close()
 def maxleveler(codes):
     global maxlevel
     maxl=0
@@ -154,7 +185,6 @@ def maxleveler(codes):
     return maxl
 
 maxlevel=1
-
 bini=open('sample.txt')
 sumi=0
 for i in bini:
@@ -164,8 +194,9 @@ sumi=sumi-1
 fin=open('sample.txt')
 l,lefty=masterencoder(fin)
 
-print("char in original file",sumi)
-a=(len(l))
-print("char in compressed file",a)
-print("percentage compression",(sumi-a)/sumi*100)
-print("max graph depth",maxlevel)
+# print("char in original file",sumi)
+# a=(len(l))
+# print("char in compressed file",a)
+# print("percentage compression",(sumi-a)/sumi*100)
+# print("max graph depth",maxlevel)
+
