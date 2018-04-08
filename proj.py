@@ -168,6 +168,32 @@ def masterencoder(filename):
     write_file('compressed.txt',finalcode,protocol)
     return finalcode,left
 
+def read_graph(filename):
+    filename = open('compressed.txt','r')
+    string = ""
+    for i in filename:
+        stop = ""
+        for j in i:
+            if j == "}":
+                stop += j
+            if j != "}" and len(stop) > 0:
+                string += stop
+                stop = ""
+            if len(stop) == 0:
+                string += j
+            if stop == "}}}":
+                break
+        if stop == "}}}":
+            break
+    return decrypt_graph(string)
+    
+def decrypt_graph(string):
+    graph = {}
+    for i in range(0,len(string),5):
+        graph[string[i]] = string[i+1:i+5]
+    return graph
+
+
 def write_file(name,text,protocol):
     file1 = open(name,"w+")
     for i in protocol:
@@ -200,3 +226,4 @@ l,lefty=masterencoder(fin)
 # print("percentage compression",(sumi-a)/sumi*100)
 # print("max graph depth",maxlevel)
 
+print(read_graph('compressed.txt'))
