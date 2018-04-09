@@ -173,7 +173,7 @@ def masterencoder(filename):
     protocol += str(codelen)
     finalcode=encoder(encoded)
     write_file('compressed.txt',finalcode,protocol)
-    return codes    
+
 
 def read_graph(filename):
     string = ""
@@ -251,7 +251,7 @@ def masterdecoder(file):
     binarytrim=rawbinary[int(extra):]
     finalstr=reversecode(binarytrim,reversecodes)
     write_file("decompressed.txt",finalstr,'')
-    return graphcodes
+
 
 def write_file(name,text,protocol):
     file1 = open(name,"w+")
@@ -272,23 +272,37 @@ def maxleveler(codes):
     return maxl
 
 
-##maxlevel=1
-##bini=open('sample.txt')
-##sumi=0
-##for i in bini:
-##    sumi = sumi + len(i)+1
-##sumi=sumi-1
+bini=open('sample.txt')
+sumi=0
+while True:
+    c=bini.read(1)
+    if not c:
+        break
+    sumi=sumi+1
+print('characters in original file', sumi)
 
 fin=open('sample.txt')
-orig=masterencoder(fin)
+masterencoder(fin)
+print('compressed file created as compressed.txt')
 
-# print("char in original file",sumi)
-# a=(len(l))
-# print("char in compressed file",a)
-# print("percentage compression",(sumi-a)/sumi*100)
-# print("max graph depth",maxlevel)
+fin=open('compressed.txt')
+sum2=0
+while True:
+    c=fin.read(1)
+    if not c:
+        break
+    sum2=sum2+1
+print('characters in compressed file',sum2)
+    
 
 filename = open("compressed.txt",'r')
-g=masterdecoder(filename)
-##print(orig)
-print(orig==g)
+masterdecoder(filename)
+print('decompressed file created as decompressed.txt')
+fin=open('decompressed.txt')
+sum3=0
+while True:
+    c=fin.read(1)
+    if not c:
+        break
+    sum3=sum3+1
+print('characters in decompressed file',sum3)
